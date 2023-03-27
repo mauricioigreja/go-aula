@@ -47,3 +47,6 @@ func (service tagService) Store(ctx context.Context, data *entitie.Tag) error {
 func (service tagService) Delete(ctx context.Context, id uint) error {
 	return service.repo.Delete(ctx, id)
 }
+func (service tagService) GetAll(ctx context.Context) ([]entitie.Tag, error) {
+	return service.repo.GetAll(ctx)
+}

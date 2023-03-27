@@ -12,6 +12,7 @@ type TagService interface {
 	GetByName(ctx context.Context, title string) (entitie.Tag, error)
 	Store(context.Context, *entitie.Tag) error
 	Delete(ctx context.Context, id uint) error
+	GetAll(ctx context.Context) ([]entitie.Tag, error)
 }
 
 //go:generate mockery --name TagRepository
@@ -21,4 +22,5 @@ type TagRepository interface {
 	Update(ctx context.Context, ar *entitie.Tag) error
 	Store(ctx context.Context, a *entitie.Tag) error
 	Delete(ctx context.Context, id uint) error
+	GetAll(ctx context.Context) ([]entitie.Tag, error)
 }
