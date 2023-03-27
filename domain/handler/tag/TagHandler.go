@@ -2,7 +2,7 @@ package tag
 
 import (
 	"github.com/labstack/echo/v4"
-	validator "gopkg.in/go-playground/validator.v9"
+	"gopkg.in/go-playground/validator.v9"
 	"microservice/domain/entitie"
 	"microservice/domain/handler"
 	_interface "microservice/domain/interface"
@@ -24,18 +24,6 @@ func NewTagHandler(echoInstance *echo.Echo, service _interface.TagService) {
 	echoInstance.DELETE("/tag/:id", handler.Delete)
 	echoInstance.GET("/tag/getAll", handler.GetAll)
 
-}
-
-func (a *TagHandler) GetAll(echoContext echo.Context) error {
-
-	ctx := echoContext.Request().Context()
-
-	art, err := a.TagService.GetAll(ctx)
-	if err != nil {
-		return echoContext.JSON(handler.GetStatusCode(err), handler.ResponseError{Message: err.Error()})
-	}
-
-	return echoContext.JSON(http.StatusOK, art)
 }
 
 func (a *TagHandler) Delete(echoContext echo.Context) error {
@@ -79,6 +67,18 @@ func (a *TagHandler) GetByID(echoContext echo.Context) error {
 	return echoContext.JSON(http.StatusOK, art)
 }
 
+func (a *TagHandler) GetAll(echoContext echo.Context) error {
+
+	ctx := echoContext.Request().Context()
+
+	art, err := a.TagService.GetAll(ctx)
+	if err != nil {
+		return echoContext.JSON(handler.GetStatusCode(err), handler.ResponseError{Message: err.Error()})
+	}
+
+	return echoContext.JSON(http.StatusOK, art)
+}
+
 func (a *TagHandler) Store(echoContext echo.Context) (err error) {
 	var ent entitie.Tag
 	err = echoContext.Bind(&ent)
@@ -87,7 +87,7 @@ func (a *TagHandler) Store(echoContext echo.Context) (err error) {
 	}
 
 	var ok bool
-	if ok, err = IsRequestValid(&ent); !ok {
+	if ok, err = isRequestValid(&ent); !ok {
 		return echoContext.JSON(http.StatusBadRequest, err.Error())
 	}
 
@@ -108,7 +108,7 @@ func (a *TagHandler) Update(echoContext echo.Context) (err error) {
 	}
 
 	var ok bool
-	if ok, err = IsRequestValid(&ent); !ok {
+	if ok, err = isRequestValid(&ent); !ok {
 		return echoContext.JSON(http.StatusBadRequest, err.Error())
 	}
 
@@ -121,7 +121,7 @@ func (a *TagHandler) Update(echoContext echo.Context) (err error) {
 	return echoContext.JSON(http.StatusCreated, ent)
 }
 
-func IsRequestValid(m *entitie.Tag) (bool, error) {
+func isRequestValid(m *entitie.Tag) (bool, error) {
 	validate := validator.New()
 	err := validate.Struct(m)
 	if err != nil {

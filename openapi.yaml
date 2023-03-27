@@ -127,7 +127,7 @@ paths:
         '404':
           description: Tag not found
   /tag/getAll:
-     get:
+    get:
       tags:
         - tag
       summary: Finds Tags
@@ -240,7 +240,7 @@ paths:
     get:
       tags:
         - category
-      summary: Finds categorys
+      summary: Finds Categorys
       description: Find categorys.
       operationId: findCategorys
       responses:

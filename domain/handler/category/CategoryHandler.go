@@ -2,7 +2,7 @@ package category
 
 import (
 	"github.com/labstack/echo/v4"
-	validator "gopkg.in/go-playground/validator.v9"
+	"gopkg.in/go-playground/validator.v9"
 	"microservice/domain/entitie"
 	"microservice/domain/handler"
 	_interface "microservice/domain/interface"
@@ -24,18 +24,6 @@ func NewCategoryHandler(echoInstance *echo.Echo, service _interface.CategoryServ
 	echoInstance.DELETE("/category/:id", handler.Delete)
 	echoInstance.GET("/category/getAll", handler.GetAll)
 
-}
-
-func (a *CategoryHandler) GetAll(echoContext echo.Context) error {
-
-	ctx := echoContext.Request().Context()
-
-	art, err := a.CategoryService.GetAll(ctx)
-	if err != nil {
-		return echoContext.JSON(handler.GetStatusCode(err), handler.ResponseError{Message: err.Error()})
-	}
-
-	return echoContext.JSON(http.StatusOK, art)
 }
 
 func (a *CategoryHandler) Delete(echoContext echo.Context) error {
@@ -79,6 +67,18 @@ func (a *CategoryHandler) GetByID(echoContext echo.Context) error {
 	return echoContext.JSON(http.StatusOK, art)
 }
 
+func (a *CategoryHandler) GetAll(echoContext echo.Context) error {
+
+	ctx := echoContext.Request().Context()
+
+	art, err := a.CategoryService.GetAll(ctx)
+	if err != nil {
+		return echoContext.JSON(handler.GetStatusCode(err), handler.ResponseError{Message: err.Error()})
+	}
+
+	return echoContext.JSON(http.StatusOK, art)
+}
+
 func (a *CategoryHandler) Store(echoContext echo.Context) (err error) {
 	var ent entitie.Category
 	err = echoContext.Bind(&ent)
@@ -87,7 +87,7 @@ func (a *CategoryHandler) Store(echoContext echo.Context) (err error) {
 	}
 
 	var ok bool
-	if ok, err = IsRequestValid(&ent); !ok {
+	if ok, err = isRequestValid(&ent); !ok {
 		return echoContext.JSON(http.StatusBadRequest, err.Error())
 	}
 
@@ -108,7 +108,7 @@ func (a *CategoryHandler) Update(echoContext echo.Context) (err error) {
 	}
 
 	var ok bool
-	if ok, err = IsRequestValid(&ent); !ok {
+	if ok, err = isRequestValid(&ent); !ok {
 		return echoContext.JSON(http.StatusBadRequest, err.Error())
 	}
 
@@ -121,7 +121,7 @@ func (a *CategoryHandler) Update(echoContext echo.Context) (err error) {
 	return echoContext.JSON(http.StatusCreated, ent)
 }
 
-func IsRequestValid(m *entitie.Category) (bool, error) {
+func isRequestValid(m *entitie.Category) (bool, error) {
 	validate := validator.New()
 	err := validate.Struct(m)
 	if err != nil {
